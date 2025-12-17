@@ -1,0 +1,6 @@
+{
+  "name": "cpp-wasm",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "cpp_wasm.js"
+}
