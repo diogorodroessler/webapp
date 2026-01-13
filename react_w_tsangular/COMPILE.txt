@@ -1,0 +1,6 @@
+
+// React/Typescript
+npm run dev
+
+// RUST
+wasm-pack build --target web

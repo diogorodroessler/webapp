@@ -11,10 +11,10 @@ import './App.css'
 
 // Rust
 import { initWasm, doubleArray } from "./wasmApi";
-import init, {soma} from 'rust-wasm'
+import init, {soma, search_for} from 'rust-wasm'
 
 // C++
-import initCpp_2 from 'cpp-wasm'
+import initCxx from 'cpp-wasm'
 
 // Python
 import { doubleNumbers } from "./api/backend";
@@ -34,7 +34,7 @@ let cppModule:any;
 
 // Init Cpp Async
 async function initCppModule() {
-  cppModule = await initCpp_2();
+  cppModule = await initCxx();
 }
 
 // Double Values Array in Rust - with file check: [wasmApi.ts]
@@ -147,7 +147,7 @@ export function CountNumber() {
     for (let i = 0; i < 5; i++) {
       for_it.push(
         <div className="card" key={i}>
-          <img src="/1.jpg" alt="fart_girl" />
+          <img src="/1.jpg" alt="1" />
         </div>
       );
     }
@@ -158,6 +158,51 @@ export function CountNumber() {
       <button onClick={() => setCounter((count) => count + 1)}>COUNTER - {count}</button>
       {card}
       {for_it}
+    </>
+  )
+}
+
+export function Toolbar() {
+
+  const [value, setState] = useState(0);
+
+  // For text area
+  let search = [];
+  let name: string = null;
+
+  search.push(
+    <input type='text' width='100' height='50' />
+  );
+
+  useEffect(() => {
+    initWasm().then(() => {
+      if ( Boolean.name.search(name) ) {}
+      search_for(name);
+    });
+  }, []);
+
+  return (
+    <>
+    {search}
+    </>
+  )
+}
+
+export function CountNumber2() {
+
+  let img_push = [];
+
+  for (let i = 0; i < 2; i++) {
+    img_push.push(
+      <div>
+      <img src="/1.jpg" alt="1"/>
+      </div>
+    )
+  }
+
+  return (
+    <>
+    {img_push}
     </>
   )
 }

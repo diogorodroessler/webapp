@@ -14,7 +14,7 @@
 // }
 
 use wasm_bindgen::prelude::*;
-use std::mem; // Allocation for WASM
+use std::{mem, path::Path}; // Allocation for WASM
 
 #[wasm_bindgen]
 pub fn soma(a: i32, b: i32) -> i32 {
@@ -41,4 +41,13 @@ pub fn free_i32(ptr: *mut i32, len: usize) {
 #[wasm_bindgen]
 pub fn double_array(input: Vec<i32>) -> Vec<i32> {
     input.into_iter().map(|v| v * 2).collect()
+}
+
+#[wasm_bindgen]
+pub fn search_for(search: &str) {
+    let mut push_from = Vec::new();
+    let s = Path::new(search).to_str().unwrap();
+    if s.starts_with(search.to_string().as_str()) {
+        push_from.push(s);
+    }
 }
