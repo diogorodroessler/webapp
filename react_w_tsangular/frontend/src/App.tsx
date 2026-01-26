@@ -162,28 +162,33 @@ export function CountNumber() {
   )
 }
 
+/// Search Box
 export function Toolbar() {
-
-  const [value, setState] = useState(0);
+  const [name, setName] = useState("");
+  const [showImage, setShowImage] = useState(false);
 
   // For text area
-  let search = [];
-  let name: string = null;
+  const search = [];
 
   search.push(
-    <input type='text' width='100' height='50' />
+    <input type='text' width='100' height='50' value={name}
+    onChange={(wr) => {
+      setName(wr.target.value);
+      setShowImage(false); // Dissarm effect to write!
+    }}
+    onKeyDown={(k) => {
+      if (k.key === "Enter") {
+        k.preventDefault(); // Eliminate Effect-Colateral
+        setShowImage(true);
+      }
+    }}
+    />
   );
-
-  useEffect(() => {
-    initWasm().then(() => {
-      if ( Boolean.name.search(name) ) {}
-      search_for(name);
-    });
-  }, []);
 
   return (
     <>
-    {search}
+      {search}
+      {showImage && <img src={"/"+name+".jpg"}/>}
     </>
   )
 }
