@@ -8,7 +8,7 @@ import App, {
   //RustWASMSomaData,
   //PyAppApi,
   //CountNumber2
-  Toolbar,
+  // ToolbarSearchTextArea,
 
 } from './App.tsx'
 
@@ -21,6 +21,6 @@ createRoot(document.getElementById('root')!).render(
     {/* <CppSomaWASM /> */}
     {/* <AllocationRustI32 /> */}
     {/* <PyAppApi /> */}
-    <Toolbar />
+    {/* <ToolbarSearchTextArea /> */}
   </StrictMode>,
 )

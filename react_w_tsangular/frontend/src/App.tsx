@@ -163,7 +163,7 @@ export function CountNumber() {
 }
 
 /// Search Box
-export function Toolbar() {
+export function ToolbarSearchTextArea() {
   const [name, setName] = useState("");
   const [showImage, setShowImage] = useState(false);
 
