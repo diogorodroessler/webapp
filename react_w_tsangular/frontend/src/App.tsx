@@ -1,245 +1,107 @@
-// First Init project
 
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
+import { useState } from "react";
 
-// My uses imports
+import {getStringForUrl} from "./wasmApi";
 
-import { useEffect, useState } from 'react'
-import './App.css'
+type MessageResponse = {
+  message: string;
+};
 
-// Rust
-import { initWasm, doubleArray } from "./wasmApi";
-import init, {soma, search_for} from 'rust-wasm'
+const API_URL = "http://localhost:8080/api/message";
 
-// C++
-import initCxx from 'cpp-wasm'
+function App() {
+  const [message, setMessage] = useState("");
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-// Python
-import { doubleNumbers } from "./api/backend";
+  async function getMessage() {
+    setLoading(true);
+    setError("");
 
-export function PyAppApi() {
-  const [data, setData] = useState<number[]>([]);
+    try {
+      const response = await fetch(API_URL);
 
-  useEffect(() => {
-    doubleNumbers([1, 2, 3, 4]).then(setData);
-  }, []);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
 
-  return <div>{data.join(", ")}</div>;
-}
-
-/* C++ needed/optional, but this variable for better knownledge in the InitCpp_2 */
-let cppModule:any;
-
-// Init Cpp Async
-async function initCppModule() {
-  cppModule = await initCxx();
-}
-
-// Double Values Array in Rust - with file check: [wasmApi.ts]
-export function AllocationRustI32() {
-  const [data, setData] = useState<number[] | Int32Array>([]);
-  const typed_data = [1, 2, 3, 4];
-  const typed = new Int32Array(typed_data);
-
-  useEffect(() => {
-    initWasm().then(() => {
-      setData(doubleArray(typed));
-    });
-  }, []);
-
-  return <div>{data.join(", ")}</div>;
-}
-
-// Call C++ in WASM
-export function CppSomaWASM() {
-  const [result, setResult] = useState<number | undefined>(0);
-
-  useEffect(() => {
-    initCppModule().then(() => {
-      const r = cppModule._soma(30,30);
-      setResult(r);
-    })
-  }, []);
-  return (
-    <>
-      <div> C++ SOMA - {result}</div>
-    </>
-  )
-}
-
-// Call Rust in WASM
-export function RustSomaWASM() {
-  const [result, setResult] = useState(0);
-  const [err, setErr] = useState<string | undefined>();
-
-  useEffect(() => {
-    init().then(() => {
-      const r = soma(50,50);
-      setResult(r);
-    })
-    .catch(err => {
-      setErr(String(err));
-    });
-  }, []);
-  return (
-    <>
-      {err && <div> ERROR Fail </div>}
-      <div> SOMA - {result}</div>
-    </>
-  )
-}
-
-// Call some Rust in WSAM
-export function RustWASMSomaData() {
-  const [val, setValue] = useState(0);
-  const [resultado, setResultado] = useState<number | null>(null);
-  const [erro, setErro] = useState<string | null>(null);
-
-  useEffect(() => {
-    let mounted = true;
-
-    init()
-      .then(() => {
-        if (mounted) {
-          const r = soma(10, 10);
-          setResultado(r);
-        }
-      })
-      .catch(err => {
-        setErro(String(err));
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  return (
-    <>
-      <button onClick={() => setValue(v => v + 1)}>
-        Value {val}
-      </button>
-
-      {erro && <div>Erro: {erro}</div>}
-      {resultado !== null && <div>Soma - {resultado}</div>}
-    </>
-  );
-}
-
-// Call Counter number with button [For Tests]
-export function CountNumber() {
-  const [count, setCounter] = useState(0)
-
-  let card = null;
-  let for_it = [];
-
-  if (count > 0) {
-    card = (
-      <div className="card">
-        <label title="ooooooh!!!">ooooooh!!!</label>
-      </div>
-    );
+      const data: MessageResponse = await response.json();
+      setMessage(data.message);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Erro desconhecido"
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
-  if (count > 0) {
-    for (let i = 0; i < 5; i++) {
-      for_it.push(
-        <div className="card" key={i}>
-          <img src="/1.jpg" alt="1" />
-        </div>
+  async function postMessage() {
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: input }),
+      });
+
+      getStringForUrl(response.statusText);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data: MessageResponse = await response.json();
+
+      setMessage(data.message);
+      setInput("");
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Erro desconhecido"
       );
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <>
-      <button onClick={() => setCounter((count) => count + 1)}>COUNTER - {count}</button>
-      {card}
-      {for_it}
-    </>
-  )
-}
+    <main style={{ padding: "2rem", fontFamily: "sans-serif" }}>
+      <h1>React + TypeScript + Go</h1>
 
-/// Search Box
-export function ToolbarSearchTextArea() {
-  const [name, setName] = useState("");
-  const [showImage, setShowImage] = useState(false);
-
-  // For text area
-  const search = [];
-
-  search.push(
-    <input type='text' width='100' height='50' value={name}
-    onChange={(wr) => {
-      setName(wr.target.value);
-      setShowImage(false); // Dissarm effect to write!
-    }}
-    onKeyDown={(k) => {
-      if (k.key === "Enter") {
-        k.preventDefault(); // Eliminate Effect-Colateral
-        setShowImage(true);
-      }
-    }}
-    />
-  );
-
-  return (
-    <>
-      {search}
-      {showImage && <img src={"/"+name+".jpg"}/>}
-    </>
-  )
-}
-
-export function CountNumber2() {
-
-  let img_push = [];
-
-  for (let i = 0; i < 2; i++) {
-    img_push.push(
-      <div>
-      <img src="/1.jpg" alt="1"/>
-      </div>
-    )
-  }
-
-  return (
-    <>
-    {img_push}
-    </>
-  )
-}
-
-// Main
-function App() {
-  // const [count, setCount] = useState(0)
-
-  return (
-    <>
-      {/* <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+      <section>
+        <h2>GET</h2>
+        <button onClick={getMessage} disabled={loading}>
+          Buscar mensagem
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p> */}
-    </>
-  )
+      </section>
+
+      <section>
+        <h2>POST</h2>
+        <input
+          value={input}
+          onChange={(event) => setInput(event.target.value)}
+          placeholder="Digite uma mensagem"
+        />
+        <button
+          onClick={postMessage}
+          disabled={loading || !input.trim()}
+        >
+          Enviar mensagem
+        </button>
+      </section>
+
+      {loading && <p>Carregando...</p>}
+      {error && <p role="alert">Erro: {error}</p>}
+
+      <h2>Resposta do servidor</h2>
+      <p>{message || "Nenhuma mensagem carregada."}</p>
+    </main>
+  );
 }
 
-export default App
+export default App;

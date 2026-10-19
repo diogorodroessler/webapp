@@ -1,6 +1,26 @@
 
-// React/Typescript
+INSTALLATION:
+
+~/dev/apps/_Rust/webapp/react_w_tsangular/frontend master* 3m 40s
+npm install
+
+------------------------------------------------------------------------------------
+
+~/dev/apps/_Rust/webapp/react_w_tsangular/frontend master* 3m 40s
 npm run dev
 
-// RUST
+------------------------------------------------------------------------------------
+
+// NAO SEI SE É UMA BOA IDEIA!!!!!
+~/dev/apps/_Rust/webapp/react_w_tsangular/frontend/wasm/rust-wasm master* 13s
+❯ wasm-pack build --target bundler --release --out-dir ../../rust-wasm-pkg
+
+// ESSE É MAIS PROVAVEL QUE FUNCIONE :)
+~/dev/apps/_Rust/webapp/react_w_tsangular/frontend/wasm/rust-wasm master* 13s
 wasm-pack build --target web
+
+
+------------------------------------------------------------------------------------
+
+~/dev/apps/_Rust/webapp/react_w_tsangular/backend/golang master* 13s
+❯ go run .

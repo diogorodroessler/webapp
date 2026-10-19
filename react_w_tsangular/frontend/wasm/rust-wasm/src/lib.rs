@@ -21,6 +21,13 @@ pub fn soma(a: i32, b: i32) -> i32 {
     a + b
 }
 
+#[wasm_bindgen]
+pub fn get_string_for_url(message: String)
+    -> String
+{
+    message
+}
+
 /* ALLOCATION FOR WASM */
 
 #[wasm_bindgen]
