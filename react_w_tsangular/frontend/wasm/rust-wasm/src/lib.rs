@@ -16,33 +16,40 @@
 use std::{mem, path::Path};
 use wasm_bindgen::prelude::*; // Allocation for WASM
 
+
+use wasm_bindgen::prelude::*;
 use tonic::Request;
 use tonic_web_wasm_client::Client;
-use wasm_bindgen::prelude::*;
 
 pub mod bridge {
     tonic::include_proto!("bridge");
 }
 
-use bridge::{Message, bridge_client::BridgeClient};
+use bridge::{
+    ExchangeRequest,
+    bridge_service_client::BridgeServiceClient,
+};
 
 #[wasm_bindgen]
 pub async fn send_message(text: String) -> Result<String, JsValue> {
     let transport = Client::new("http://localhost:8080".to_string());
+    let mut client = BridgeServiceClient::new(transport);
 
-    let mut client = BridgeClient::new(transport);
-
-    let request = Message { text, sequence: 1 };
+    let request = ExchangeRequest {
+        text,
+        sequence: 1,
+    };
 
     let response = client
-        .exchange(Request::new(request))
-        .await
-        .map_err(|error| JsValue::from_str(&error.to_string()))?;
+    .exchange(Request::new(request))
+    .await
+    .map_err(|error| JsValue::from_str(&error.to_string()))?;
 
     let message = response.into_inner();
 
     Ok(message.text)
 }
+
 
 #[wasm_bindgen]
 pub fn soma(a: i32, b: i32) -> i32 {
