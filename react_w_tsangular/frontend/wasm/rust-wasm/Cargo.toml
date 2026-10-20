@@ -2,9 +2,23 @@
 name = "rust-wasm"
 version = "0.1.0"
 edition = "2024"
+build = "build.rs"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
+prost = "0.14.4"
+tonic = { version = "0.14.6", default-features = false, features = ["codegen"] }
+tonic-prost = "0.14.6"
 wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+tonic-web-wasm-client = "0.9"
+tonic-prost-build = "0.14.6"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+tonic-web-wasm-client = "0.9"
+wasm-bindgen-futures = "0.4"
+
+[build-dependencies]
+tonic-prost-build = "0.14.6"

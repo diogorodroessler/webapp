@@ -1,0 +1,9 @@
+// NA RAIZ DO PROJETO
+
+protoc \
+        -I "frontend/wasm/rust-wasm/proto" \
+        --go_out=. \
+        --go_opt=module="backend/golang" \
+        --go-grpc_out=backend/golang \
+        --go-grpc_opt=module="backend/golang" \
+        "frontend/wasm/rust-wasm/proto/bridge.proto"

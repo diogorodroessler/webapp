@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 
-import {getStringForUrl} from "./wasmApi";
+import { send_message, } from "./wasmApi";
 
 type MessageResponse = {
   message: string;
@@ -14,6 +14,8 @@ function App() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  let result = "";
 
   async function getMessage() {
     setLoading(true);
@@ -50,15 +52,17 @@ function App() {
         body: JSON.stringify({ message: input }),
       });
 
-      getStringForUrl(response.statusText);
-
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
 
       const data: MessageResponse = await response.json();
 
-      setMessage(data.message);
+
+      // RUST:
+      result = await send_message(data.message);
+      setMessage(result);
+
       setInput("");
     } catch (err) {
       setError(
@@ -84,9 +88,13 @@ function App() {
         <h2>POST</h2>
         <input
           value={input}
-          onChange={(event) => setInput(event.target.value)}
+          onChange={(event) => {
+            // setInput(event.target.value);
+            setMessage(event.target.value);
+          }}
           placeholder="Digite uma mensagem"
         />
+
         <button
           onClick={postMessage}
           disabled={loading || !input.trim()}

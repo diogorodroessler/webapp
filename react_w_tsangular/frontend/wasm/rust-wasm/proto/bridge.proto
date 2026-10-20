@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package bridge;
+
+option go_package = "backend/golang/bridgepb;bridgepb";
+
+service BridgeService {
+  rpc Exchange(ExchangeRequest) returns (ExchangeResponse);
+}
+
+message ExchangeRequest {
+  string text = 1;
+  uint64 sequence = 2;
+}
+
+message ExchangeResponse {
+  string text = 1;
+  uint64 sequence = 2;
+}
